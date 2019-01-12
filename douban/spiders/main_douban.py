@@ -14,7 +14,10 @@ class MainDouban(scrapy.Spider):
             'https://www.douban.com/group/sweethome/discussion?start=0',
             'https://www.douban.com/group/26926/discussion?start=0',
             'https://www.douban.com/group/257523/discussion?start=0',
-            'https://www.douban.com/group/472358/discussion?start=0'
+            'https://www.douban.com/group/472358/discussion?start=0',
+            'https://www.douban.com/group/beijingzufang/discussion?start=0',
+            'https://www.douban.com/group/26926/discussion?start=0',
+            'https://www.douban.com/group/zhufang/discussion?start=0'
         ]
 
         for i in urls:
@@ -31,6 +34,15 @@ class MainDouban(scrapy.Spider):
 
         send = SendEmail()
 
+        history = []
+
+        with open('history.txt') as f:
+            tmp = f.readlines()
+            if len(tmp):
+                history.extend(tmp)
+            else:
+                self.log('历史记录是空', level=logging.WARNING)
+
         page = response.css('td.title')
         for i in page:
             title = i.css('a::text').extract_first().strip()
@@ -39,5 +51,8 @@ class MainDouban(scrapy.Spider):
             self.log('租房链接：{0}'.format(link), level=logging.WARNING)
             email_message = '租房标题：{0}\n租房链接：{1}'.format(title, link)
             for j in key_words:
-                if j in title:
+                if j in title and link not in history:
+                    history.append(link)
+                    with open('history.txt', 'w') as f:
+                        f.writelines(history)
                     send.send_email('zhaoli@advance.ai', email_message)
