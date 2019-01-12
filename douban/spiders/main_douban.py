@@ -53,10 +53,9 @@ class MainDouban(scrapy.Spider):
             email_message = '租房标题：{0}\n租房链接：{1}'.format(title, link)
             for j in key_words:
                 if j in title and link not in history:
-                    history.append(link + '\n')
-                    with open('history.txt', 'w') as f:
-                        f.writelines(history)
-
                     # QQ邮箱对发信频率有限制，所以没有找到好的方法之前，无脑 sleep
                     time.sleep(10)
                     send.send_email('', email_message)
+                    history.append(link + '\n')
+                    with open('history.txt', 'w') as f:
+                        f.writelines(history)
