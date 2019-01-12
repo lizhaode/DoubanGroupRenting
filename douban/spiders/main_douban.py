@@ -1,4 +1,5 @@
 import logging
+import time
 
 import scrapy
 
@@ -55,4 +56,7 @@ class MainDouban(scrapy.Spider):
                     history.append(link)
                     with open('history.txt', 'w') as f:
                         f.writelines(history)
-                    send.send_email('zhaoli@advance.ai', email_message)
+
+                    # QQ邮箱对发信频率有限制，所以没有找到好的方法之前，无脑 sleep
+                    time.sleep(10)
+                    send.send_email('', email_message)
