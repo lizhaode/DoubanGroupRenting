@@ -53,7 +53,7 @@ class MainDouban(scrapy.Spider):
             email_message = '租房标题：{0}\n租房链接：{1}'.format(title, link)
             for j in key_words:
                 if j in title and link not in history:
-                    history.append(link)
+                    history.append(link + '\n')
                     with open('history.txt', 'w') as f:
                         f.writelines(history)
 
